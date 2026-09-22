@@ -19,13 +19,25 @@ export default function Footer() {
         <div className="flex gap-16 flex-wrap">
           <FooterColumn
             title="Diners"
-            links={["Browse restaurants", "How ordering works"]}
+            links={[
+              ["Browse restaurants", `${process.env.PUBLIC_URL}/restaurants`],
+              ["How ordering works", "#how-it-works"],
+            ]}
           />
           <FooterColumn
             title="Businesses"
-            links={["List your restaurant", "Owner dashboard"]}
+            links={[
+              ["List your restaurant", `${process.env.PUBLIC_URL}/business/apply`],
+              ["Owner dashboard", `${process.env.PUBLIC_URL}/business/login`],
+            ]}
           />
-          <FooterColumn title="Company" links={["About", "Contact"]} />
+          <FooterColumn
+            title="Company"
+            links={[
+              ["About", "#about"],
+              ["Contact", `${process.env.PUBLIC_URL}/contact`],
+            ]}
+          />
         </div>
       </div>
       <div className="border-t border-[#E5DFCF] px-6 py-4 text-center text-[12.5px] text-muted-2">
@@ -35,20 +47,27 @@ export default function Footer() {
   );
 }
 
-function FooterColumn({ title, links }: { title: string; links: string[] }) {
+// Links are [label, href]. Most hrefs point at pages coming in later sprints.
+function FooterColumn({
+  title,
+  links,
+}: {
+  title: string;
+  links: [string, string][];
+}) {
   return (
     <div className="flex flex-col gap-2.5">
       <span className="text-[12.5px] font-bold tracking-wide uppercase text-muted-2">
         {title}
       </span>
-      {links.map((link) => (
-        <button
-          key={link}
-          type="button"
-          className="text-left text-sm font-medium text-muted hover:text-ink transition-colors"
+      {links.map(([label, href]) => (
+        <a
+          key={label}
+          href={href}
+          className="text-sm font-medium text-muted hover:text-ink transition-colors"
         >
-          {link}
-        </button>
+          {label}
+        </a>
       ))}
     </div>
   );

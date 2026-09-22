@@ -1,34 +1,27 @@
-import { Restaurant } from "../types/restaurant";
-
 /**
  * ============================================================================
- *  BACKEND INTEGRATION POINT — nothing below is real server/DB logic.
+ *  BACKEND INTEGRATION POINT
  * ============================================================================
  *
- * This file is intentionally just a thin frontend stub. Everything here
- * returns mock/hardcoded data so the Home page has something to render.
+ * Sprint 1 only needs one call: the number of in-network restaurants.
  *
+ *   Browser  --GET /api/restaurants/count-->  Tomcat (RestaurantCountServlet)
+ *   Tomcat   --SELECT COUNT(*) FROM restaurant-->  MySQL
+ *   Browser  <--{ "count": 42 }--  Tomcat
+ *
+ * The app lives under /menumap (the "homepage" in package.json and the
+ * Tomcat context path), so PUBLIC_URL is "/menumap" in both dev and prod.
+ * In development, `npm start` proxies the API call to Tomcat on :8080
+ * (see "proxy" in package.json), so Tomcat must be running there.
+ * Search, menus, and ordering will be added here in later sprints.
  */
 
-export interface SearchParams {
-  query?: string;
-  cuisine?: string;
-  location?: string;
-}
-
-/** TODO(backend): replace with GET /api/restaurants */
-export async function getRestaurants(): Promise<Restaurant[]> {
-  return Promise.resolve([]);
-}
-
-/** TODO(backend): replace with GET /api/restaurants/search?... (name, cuisine, location, menu items, multi-key search) */
-export async function searchRestaurants(
-  params: SearchParams
-): Promise<Restaurant[]> {
-  return Promise.resolve([]);
-}
-
-/** TODO(backend): replace with GET /api/restaurants/count (live count from the DB) */
+/** GET /menumap/api/restaurants/count. Throws if the server or database is unreachable. */
 export async function getRestaurantCount(): Promise<number> {
-  return Promise.resolve(0);
+  const res = await fetch(`${process.env.PUBLIC_URL}/api/restaurants/count`);
+  if (!res.ok) {
+    throw new Error(`Server responded with ${res.status}`);
+  }
+  const body: { count: number } = await res.json();
+  return body.count;
 }
